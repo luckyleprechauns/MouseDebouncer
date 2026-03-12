@@ -1,0 +1,79 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - 'v*'          # Trigger on version tags like v2.0, v2.1, etc.
+  workflow_dispatch:   # Allow manual trigger from GitHub UI
+
+permissions:
+  contents: write      # Required to create releases
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Configure CMake
+        run: cmake -B build -G "Visual Studio 17 2022" -A x64
+
+      - name: Build Release
+        run: cmake --build build --config Release
+
+      - name: Verify build output
+        run: |
+          if (!(Test-Path "build\bin\MouseDebouncer.exe")) {
+            Write-Error "MouseDebouncer.exe not found!"
+            exit 1
+          }
+          Write-Host "Build successful: build\bin\MouseDebouncer.exe"
+          Get-Item "build\bin\MouseDebouncer.exe" | Select-Object Name, Length, LastWriteTime
+
+      - name: Create portable zip
+        run: |
+          New-Item -ItemType Directory -Path staging -Force
+          Copy-Item build\bin\MouseDebouncer.exe staging\
+          Copy-Item scripts\install-shortcuts.bat staging\
+          Compress-Archive -Path staging\* -DestinationPath MouseDebouncer-portable-win64.zip
+
+      - name: Build Inno Setup installer
+        run: |
+          # Inno Setup is pre-installed on windows-latest runners
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer\MouseDebouncer.iss
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Upload portable zip (artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: MouseDebouncer-portable-win64
+          path: MouseDebouncer-portable-win64.zip
+
+      - name: Upload installer (artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: MouseDebouncer-setup
+          path: build/installer/MouseDebouncer-*-setup.exe
+
+      # Only create a GitHub Release when triggered by a version tag
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: MouseDebouncer ${{ github.ref_name }}
+          body: |
+            ## MouseDebouncer ${{ github.ref_name }}
+            
+            ### Downloads
+            - **`MouseDebouncer-*-setup.exe`** — Windows installer (recommended). Installs to Program Files, adds Start Menu entry, optional startup on login, and proper uninstall support.
+            - **`MouseDebouncer-portable-win64.zip`** — Portable version. Extract anywhere and run. No installation needed.
+            
+            ### What's New
+            See the [commit history](https://github.com/luckyleprechauns/MouseDebouncer/commits/${{ github.ref_name }}) for changes in this release.
+          files: |
+            MouseDebouncer-portable-win64.zip
+            build/installer/MouseDebouncer-*-setup.exe
+          draft: false
+          prerelease: false

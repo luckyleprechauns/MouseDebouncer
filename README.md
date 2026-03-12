@@ -1,6 +1,18 @@
 # 🖱️ MouseDebouncer
 
+[![Build & Release](https://github.com/luckyleprechauns/MouseDebouncer/actions/workflows/build.yml/badge.svg)](https://github.com/luckyleprechauns/MouseDebouncer/actions/workflows/build.yml)
+[![Latest Release](https://img.shields.io/github/v/release/luckyleprechauns/MouseDebouncer?label=download)](https://github.com/luckyleprechauns/MouseDebouncer/releases/latest)
+
 A lightweight Windows utility that filters out unwanted double-clicks caused by aging or defective mouse switches. Configure independent debounce intervals for the left, right, and middle buttons — no driver hacks or hardware mods required.
+
+## Download
+
+**[⬇️ Download Latest Release](https://github.com/luckyleprechauns/MouseDebouncer/releases/latest)**
+
+| File | Description |
+|---|---|
+| `MouseDebouncer-*-setup.exe` | **Windows installer** (recommended) — installs to Program Files, adds Start Menu entry, optional auto-start on login, and proper uninstall via "Apps & Features" |
+| `MouseDebouncer-portable-win64.zip` | **Portable version** — extract anywhere and run, no installation needed |
 
 ## The Problem
 
@@ -102,18 +114,23 @@ Settings are stored in the registry under `HKEY_CURRENT_USER\Software\MouseDebou
 
 ```
 MouseDebouncer/
+├── .github/
+│   └── workflows/
+│       └── build.yml              # CI/CD: build, package, and release
 ├── src/
-│   └── main.cpp                # Application entry point, hook logic, and UI
+│   └── main.cpp                   # Application entry point, hook logic, and UI
 ├── resources/
-│   ├── MouseDebouncer.rc       # Win32 resource script (dialogs, icons)
-│   ├── resource.h              # Dialog and control ID definitions
-│   ├── mouse.ico               # System tray icon
-│   ├── mouse_high_res_trpt.ico # High-resolution icon for the settings dialog
+│   ├── MouseDebouncer.rc          # Win32 resource script (dialogs, icons)
+│   ├── resource.h                 # Dialog and control ID definitions
+│   ├── mouse.ico                  # System tray icon
+│   ├── mouse_high_res_trpt.ico    # High-resolution icon for the settings dialog
 │   └── mouse_high_res_md_24b.bmp  # Bitmap asset
+├── installer/
+│   └── MouseDebouncer.iss         # Inno Setup installer script
 ├── scripts/
-│   └── install-shortcuts.bat   # Creates Start Menu / Startup shortcuts
-├── CMakeLists.txt              # Build and install configuration
-├── README.md                   # This file
+│   └── install-shortcuts.bat      # Creates Start Menu / Startup shortcuts (portable)
+├── CMakeLists.txt                 # Build and install configuration
+├── README.md                      # This file
 └── .gitignore
 ```
 
