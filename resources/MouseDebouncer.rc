@@ -1,0 +1,49 @@
+#include <windows.h>
+#include "resource.h"
+
+IDI_APP_ICON ICON "mouse.ico"
+IDI_HIGH_RES_BITMAP BITMAP "mouse_high_res_md_24b.bmp"
+IDI_HIGH_RES_ICON ICON "mouse_high_res_trpt.ico"
+
+IDD_SETTINGS_DIALOG DIALOGEX 0, 0, 260, 130
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Mouse Debouncer Settings"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    LTEXT           "Left Debounce (ms):", -1, 7, 10, 75, 8
+    EDITTEXT        IDC_LEFT_DEBOUNCE_EDIT, 85, 8, 30, 12, ES_AUTOHSCROLL | ES_NUMBER
+    
+    LTEXT           "Right Debounce (ms):", -1, 7, 28, 75, 8
+    EDITTEXT        IDC_RIGHT_DEBOUNCE_EDIT, 85, 26, 30, 12, ES_AUTOHSCROLL | ES_NUMBER
+    
+    LTEXT           "Middle Debounce (ms):", -1, 7, 46, 75, 8
+    EDITTEXT        IDC_MIDDLE_DEBOUNCE_EDIT, 85, 44, 30, 12, ES_AUTOHSCROLL | ES_NUMBER
+
+    //CONTROL         IDC_SETTINGS_MOUSE_ICON, IDC_SETTINGS_MOUSE_ICON, "Static", SS_BITMAP | SS_REALSIZEIMAGE, 160, 7, 64, 64
+    CONTROL         IDI_HIGH_RES_ICON, IDC_SETTINGS_MOUSE_ICON, "Static", SS_ICON | SS_REALSIZEIMAGE, 140, 7, 64, 64
+    
+    CONTROL         "Show on Startup", IDC_SHOW_ON_STARTUP_CHECKBOX, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 70, 120, 10
+    
+    // Row of buttons with consistent spacing
+    PUSHBUTTON      "Apply", IDC_APPLY_BUTTON, 15, 105, 50, 14
+    PUSHBUTTON      "Cancel", IDC_CANCEL_BUTTON, 75, 105, 50, 14
+    PUSHBUTTON      "Help", IDC_HELP_BUTTON, 135, 105, 50, 14
+    PUSHBUTTON      "Exit", IDC_EXIT_BUTTON, 195, 105, 50, 14
+END
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 250, 150 // Increased width from 220 to 250
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About Mouse Debouncer"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDI_APP_ICON, IDC_STATIC, 7, 7, 21, 20
+    LTEXT           "Mouse Debouncer", IDC_STATIC, 40, 7, 200, 10, SS_CENTER
+    
+    // Increased widths to 200 and adjusted Y offsets for wrapping
+    LTEXT    "", IDC_ABOUT_VERSION, 40, 22, 200, 10
+    LTEXT    "", IDC_ABOUT_DESCRIPTION, 40, 35, 200, 24 // Height 24 for wrapping
+    LTEXT    "", IDC_ABOUT_ATTRIBUTION, 40, 65, 200, 28 // Height 28 for multi-line credit
+    CONTROL  "", IDC_ABOUT_GITHUB_LINK, "Static", SS_LEFT | SS_NOTIFY, 40, 90, 200, 18
+    
+    PUSHBUTTON      "Close", IDOK, 100, 125, 50, 14
+END
